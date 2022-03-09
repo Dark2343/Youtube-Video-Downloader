@@ -4,7 +4,7 @@ from pytube.cli import on_progress
 url = str(input("Enter the URL of the video you wish to download:\n"))
 video = YouTube(url, on_progress_callback=on_progress)
 print(f'\nTitle: {video.title}')
-print(f'Length: {round(video.length/60,2)} mins')
+print(f'Length: {round(video.length/60)} mins')
 print(f'Made by: {video.author}')
 type = int(input("\nDo you want to download Video or Audio:\n 1- Video\n 2- Audio\n"))
 
