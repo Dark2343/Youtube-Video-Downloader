@@ -27,7 +27,7 @@ if type == 1:
     elif quality == 2:
         video = video.streams.filter(progressive=True, res="720p").first()
         if video:
-            print(f'\nFile size is: {video.filesize / 10 ** 6} MBs')
+            print(f'\nFile size is: {round(video.filesize / 10 ** 6)} MBs')
             download = int(input("Do you wish to download this file ?\n 1-Yes\n 2-No\n"))
 
             if download == 1:
