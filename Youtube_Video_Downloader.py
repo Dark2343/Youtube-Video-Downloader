@@ -1,5 +1,4 @@
 import time
-
 from pytube import YouTube
 from pytube.cli import on_progress
 
