@@ -1,3 +1,8 @@
+# Date: 8/3/2022
+# A program to download videos from Youtube as either a video format or an audio one
+# Allows you to choose the quality if you're downloading it as a video while also telling you the size of the download
+
+
 import time
 from pytube import YouTube
 from pytube.cli import on_progress
