@@ -1,7 +1,6 @@
 import time
 from pytube import YouTube
 from pytube.cli import on_progress
-import ssl
 
 url = str(input("Enter the URL of the video you wish to download:\n"))
 link = YouTube(url, on_progress_callback=on_progress)
