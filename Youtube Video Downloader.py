@@ -1,3 +1,17 @@
+
+# TODO
+# Need to add GUI
+
+# Date: 8/3/2022
+# A program to download videos from YouTube as either a video format or an audio one
+# Allows you to choose the quality if you're downloading it as a video while also telling you the size of the download
+
+# Date: 26/4/2023
+# Optimized it and removed repeated code... also broke it (Ver. 12)
+
+# Date: 13/5/2023
+# Code no longer broken (had to update the module Ver. 15), also added QoL improvements
+
 import time, os
 from pytube import YouTube
 from pytube.cli import on_progress
@@ -35,7 +49,7 @@ if media:
     if download == 1:
         os.system('cls')
         print("Please wait, file is being downloaded...\n")
-        media.download('/Downloads')
+        media.download('D:\\Downloads')
         print("\n\nFile has been downloaded\nEnjoy :D\n")
 
     elif download == 2:
