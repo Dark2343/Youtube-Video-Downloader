@@ -12,14 +12,27 @@
 # Date: 13/5/2023
 # Code no longer broken (had to update the module Ver. 15), also added QoL improvements
 
-import time, os
 from pytube import YouTube
-from pytube.cli import on_progress
 
+progress = 0
 
+def onProgress(stream, chunk, remainingBytes):
+    global progress
+    
+    totalSize = stream.filesize
+    bytesDownloaded = totalSize - remainingBytes
+    progress = int(bytesDownloaded / totalSize * 100)
+    
 def getData(url):
-    link = YouTube(url, on_progress_callback=on_progress)
+    link = YouTube(url)
+    link.register_on_progress_callback(onProgress)
     return link
+
+def download(media, path, progressBar):
+    global progress
+    
+    progressBar.set(progress)
+    media.download(path)
 
 # print(f'Title: {link.title}\nLength: {round(link.length/60)} mins\nMade by: {link.author}')
 

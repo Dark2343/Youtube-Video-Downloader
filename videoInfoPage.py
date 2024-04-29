@@ -7,7 +7,7 @@
 # TODO: Handle exception if the youtube api failed or network error
 # Handle if quality doesn't exist
 
-import logic, io
+import logic, io, downloadPage
 import tkinter as tk
 import customtkinter as ctk
 import urllib.request as lib
@@ -15,6 +15,11 @@ from PIL import Image
 from tkinter import filedialog as fd
 
 def show(app, url):
+    
+    # Destroy the welcome widgets
+    for widget in app.winfo_children():
+        widget.destroy()
+    
     link = logic.getData(url)
     
     #Title
@@ -86,6 +91,7 @@ def show(app, url):
     
     # Gets the size of the video according to type and quality
     def getFileSize():
+        global media
         media = None
         
         if typeRadio.get() == 1:
@@ -99,7 +105,7 @@ def show(app, url):
                 media = link.streams.filter(progressive=True, res="720p").first()
         
         if media:
-            fileSizeLabel.configure(text=f"File Size: {round(media.filesize / 10 ** 6)} MBs")
+            fileSizeLabel.configure(text=f"File Size: {media.filesize_mb} MBs")
         else:
             fileSizeLabel.configure(text="File Size: N/A")  # Handle NoneType gracefully
         fileSizeLabel.place(relx=0.69, rely=0.58)
@@ -127,6 +133,9 @@ def show(app, url):
     directoryButton = ctk.CTkButton(app, text= "Select Download Location", command= selectDirectory)
     pathLabel = ctk.CTkLabel(app, font= ("", 15))
     
+    def downloadVideo():
+        downloadPage.show(app, directory.get(), media, media.url)
+        
     # Download button
-    downloadButton = ctk.CTkButton(app, text= "Download")
+    downloadButton = ctk.CTkButton(app, text= "Download", command= downloadVideo)
     
