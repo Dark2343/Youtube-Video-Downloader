@@ -1,8 +1,9 @@
-# Progress bar
-# Message at the end
+# TODO:
+# Progress bar (DONE)
+# Message at the end (DONE)
 # Return to main menu
 
-import logic, threading
+import Logic.logic as logic, threading
 import customtkinter as ctk
 
 def show(app, path, media, url):

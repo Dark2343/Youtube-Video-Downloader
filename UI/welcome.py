@@ -1,6 +1,8 @@
-# Welcome message
-# Enter URL
-import videoInfoPage
+# TODO:
+# Welcome message (DONE)
+# Enter URL (DONE)
+
+import UI.videoInfo as videoInfo
 import customtkinter as ctk
 
 def show(app):
@@ -14,7 +16,7 @@ def show(app):
     urlData.place(relx = 0.5, rely = 0.5, anchor= ctk.CENTER)
     
     def findVideo():
-        videoInfoPage.show(app, urlData.get()) 
+        videoInfo.show(app, urlData.get()) 
     
     getVideoButton = ctk.CTkButton(app, text= "Get video", command= findVideo)
     getVideoButton.place(relx = 0.5, rely = 0.6, anchor= ctk.CENTER)

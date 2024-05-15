@@ -1,13 +1,15 @@
-# Video info
-# Choose Audio or Video
-# Select quality
-# Select file download location
-# Press download
+# TODO:
+# Video info (DONE)
+# Choose Audio or Video (DONE)
+# Select quality (DONE)
+# Select file download location (DONE)
+# Press download (DONE)
 
-# TODO: Handle exception if the youtube api failed or network error
-# Handle if quality doesn't exist
+# FIXME:
+# Handle if quality doesn't exist (DONE)
+# Handle exception if the youtube api failed or network error
 
-import logic, io, downloadPage
+import Logic.logic as logic, io, UI.download as download
 import tkinter as tk
 import customtkinter as ctk
 import urllib.request as lib
@@ -134,7 +136,7 @@ def show(app, url):
     pathLabel = ctk.CTkLabel(app, font= ("", 15))
     
     def downloadVideo():
-        downloadPage.show(app, directory.get(), media, media.url)
+        download.show(app, directory.get(), media, media.url)
         
     # Download button
     downloadButton = ctk.CTkButton(app, text= "Download", command= downloadVideo)
