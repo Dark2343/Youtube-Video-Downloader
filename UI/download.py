@@ -3,40 +3,55 @@
 # Message at the end (DONE)
 # Return to main menu
 
-import Logic.logic as logic, threading
-import customtkinter as ctk
 
-def show(app, path, media, url):
-    
-    # Destroy the welcome widgets
-    for widget in app.winfo_children():
-        widget.destroy()
-    
-    downloadingLabel = ctk.CTkLabel(app, text= f"Downloading: {media.default_filename}", font= ("", 15))
-    downloadingLabel.place(relx = 0.02, rely = 0.25)
-    
-    progressBar = ctk.CTkProgressBar(app, width=804, height=20,  orientation= "horizontal", mode= "determinate")
-    progressBar.place(relx = 0.03, rely = 0.35)
+# WORKS RIGHT NOW
+import customtkinter as ctk
+import Logic.logic as logic, threading
+
+class Download(ctk.CTkFrame):
+    def __init__(self, app, path, media, showWelcomeCall):
+        super().__init__(app)
+        
+        # TODO: RETURN BACK TO MENU
+        self.showWelcome = showWelcomeCall
+        
+        # Top padding
+        spacerFrame = ctk.CTkLabel(self, text= "")
+        spacerFrame.pack(pady=30)
+        
+        downloadingLabel = ctk.CTkLabel(app, text= f"Downloading: {media.default_filename}", font= ("", 15))
+        downloadingLabel.pack(padx= 30, pady = 25, anchor='w')
+        
+        self.progressBar = ctk.CTkProgressBar(self, width=804, height=20,  orientation= "horizontal", mode= "determinate")
+        self.progressBar.pack(padx= 30, pady = 15)
+        
+        self.downloadVideo(media, path)
     
     # Updates the progress every 100 ms until the download is finished
-    def updateProgressBar():
-        progressBar.set(logic.progress/ 100)
+    def updateProgressBar(self, app):
+        self.progressBar.set(logic.progress/ 100)
         if logic.progress < 100:
-            app.after(100, updateProgressBar)
+            app.after(100, self.updateProgressBar)
         else:
             # Show message at the end of download
-            completeLabel = ctk.CTkLabel(app, text="Download Complete", font=("", 15))
-            completeLabel.place(relx=0.02, rely=0.45)
+            completeLabel = ctk.CTkLabel(self, text="Download Complete", font=("", 25))
+            completeLabel.pack(padx= 20, pady= 45)
     
     # Starts downloading the video on a separate thread to ensure that the download and updating of progress bar don't interrupt each other
-    def downloadVideo():
+    def downloadVideo(self, media, path):
         def downloadAsync():
-            logic.download(media, path, progressBar)
+            logic.download(media, path, self.progressBar)
     
         # Starting the download on a new thread
         downloadThread = threading.Thread(target= downloadAsync)
         downloadThread.start()
+        
         # Starts updating the progress bar
-        updateProgressBar()
+        self.updateProgressBar()
     
-    downloadVideo()
+    def show(self):
+        self.pack(fill= "both", expand= True)
+        pass
+        
+    def hide(self):
+        self.pack_forget()

@@ -9,135 +9,146 @@
 # Handle if quality doesn't exist (DONE)
 # Handle exception if the youtube api failed or network error
 
-import Logic.logic as logic, io, UI.download as download
-import tkinter as tk
-import customtkinter as ctk
-import urllib.request as lib
+
+# COMPLETELY FUCKED AT THE MOMENT
+
 from PIL import Image
 from tkinter import filedialog as fd
+import customtkinter as ctk, urllib.request as lib
+import Logic.logic as logic, io, UI.download as download, tkinter as tk
 
-def show(app, url):
+class VideoInfo(ctk.CTkFrame):
+    def __init__(self, app, url, showWelcomeCall, showDownloadCall):
+        
+        super().__init__(app)
+        
+        # TODO: ADD OPTION TO GO BACK TO WELCOME
+        self.link = logic.getData(url)
+        self.showWelcome = showWelcomeCall
+        self.showDownload = showDownloadCall
+        
+        #Title
+        videoTitleLabel = ctk.CTkLabel(app, text= f"Title: {self.link.title}", font= ("", 15))
+        videoTitleLabel.configure(width= 20)
+        videoTitleLabel.pack(padx = 2, pady = 2, anchor = 'w')
+        
+        # Length
+        videoLengthLabel = ctk.CTkLabel(app, text= f"Length: {round(self.link.length/60)} mins", font= ("", 15))
+        videoLengthLabel.configure(width= 20)
+        videoLengthLabel.pack(padx = 2, pady = 2, anchor = 'w')
+        
+        # Author
+        videoAuthorLabel = ctk.CTkLabel(app, text= f"Author: {self.link.author}", font= ("", 15))
+        videoAuthorLabel.configure(width= 20)
+        videoAuthorLabel.pack(padx = 2, pady = 2, anchor = 'w')
+        
+        # Thumbnail
+        with lib.urlopen(self.link.thumbnail_url) as u:
+            rawData = u.read()
+                
+        image = ctk.CTkImage(Image.open(io.BytesIO(rawData)), size=(350, 200))
+        thumbnail = ctk.CTkLabel(app, text= "", image= image)
+        thumbnail.pack(padx = 0.57, pady = 0.15, anchor = 'e')
+                
+        # File Type
+        downloadTypeLabel = ctk.CTkLabel(app, text= f"Download as: ", font= ("", 15))
+        downloadTypeLabel.pack(padx = 0.18, pady = 0.6)
+
+        self.fileSizeLabel = ctk.CTkLabel(app, font= ("", 15))
+        
+        # Audio/Video
+        self.typeRadio = tk.IntVar(value = 0)
+        self.audioRadio = ctk.CTkRadioButton(app, text= "Audio", value= 1, variable= self.typeRadio, command= self.updateQualityOptions)
+        self.audioRadio.pack(padx = 0.3, pady = 0.6)
+        self.videoRadio = ctk.CTkRadioButton(app, text= "Video", value= 2, variable= self.typeRadio, command= self.updateQualityOptions)
+        self.videoRadio.pack(padx = 0.4, pady = 0.6)
+        
+        # Quality Type
+        self.qualityRadio = tk.IntVar(value = 0)
+        self.qualityTypeLabel = ctk.CTkLabel(app, text= f"Quality: ", font= ("", 15))
+        self.lowRadio = ctk.CTkRadioButton(app, text= "144p", variable= self.qualityRadio, value= 1, command= self.updateQualityOptions)
+        self.mediumRadio = ctk.CTkRadioButton(app, text= "360p", variable= self.qualityRadio, value= 2, command= self.updateQualityOptions)
+        self.highRadio = ctk.CTkRadioButton(app, text= "720p", variable= self.qualityRadio, value= 3, command= self.updateQualityOptions)
+        
+
+        self.directory = tk.StringVar(value= "")
+        self.directoryButton = ctk.CTkButton(app, text= "Select Download Location", command= self.selectDirectory)
+        self.pathLabel = ctk.CTkLabel(app, font= ("", 15))
+                    
+        # Download button
+        self.downloadButton = ctk.CTkButton(app, text= "Download", command= self.downloadVideo)
     
-    # Destroy the welcome widgets
-    for widget in app.winfo_children():
-        widget.destroy()
     
-    link = logic.getData(url)
-    
-    #Title
-    videoTitleLabel = ctk.CTkLabel(app, text= f"Title: {link.title}", font= ("", 15))
-    videoTitleLabel.place(relx = 0.02, rely = 0.15)
-    
-    # Length
-    videoLengthLabel = ctk.CTkLabel(app, text= f"Length: {round(link.length/60)} mins", font= ("", 15))
-    videoLengthLabel.place(relx = 0.02, rely = 0.25)
-    
-    # Author
-    videoAuthorLabel = ctk.CTkLabel(app, text= f"Author: {link.author}", font= ("", 15))
-    videoAuthorLabel.place(relx = 0.02, rely = 0.35)
-    
-    # Thumbnail
-    with lib.urlopen(link.thumbnail_url) as u:
-        rawData = u.read()
-            
-    image = ctk.CTkImage(Image.open(io.BytesIO(rawData)), size=(350, 200))
-    thumbnail = ctk.CTkLabel(app, text= "", image= image)
-    thumbnail.place(relx = 0.57, rely = 0.15)
+    def show(self):
+        self.pack(fill= "both", expand= True)
+        
+    def hide(self):
+        self.pack_forget()
     
     # Function to update quality settings visibility
-    def updateQualityOptions():
+    def updateQualityOptions(self):
         # Check if Audio is chosen to hide video settings
-        if typeRadio.get() == 1:
-            qualityTypeLabel.place_forget()
-            lowRadio.place_forget()
-            mediumRadio.place_forget()
-            highRadio.place_forget()
-            directoryButton.place(relx = 0.3, rely = 0.9)
-            getFileSize()
+        if self.typeRadio.get() == 1:
+            self.qualityTypeLabel.pack_forget()
+            self.lowRadio.pack_forget()
+            self.mediumRadio.pack_forget()
+            self.highRadio.pack_forget()
+            self.directoryButton.pack(padx = 0.3, pady = 0.9)
+            self.getFileSize()
             
             # Checks if directory is chosen to show download button
-            if directory.get() != "":
-                pathLabel.configure(text= f"Path: {directory.get()}")
-                pathLabel.place(relx = 0.25, rely = 0.8)
-                downloadButton.place(relx = 0.5, rely = 0.9)
+            if self.directory.get() != "":
+                self.pathLabel.configure(text= f"Path: {self.directory.get()}")
+                self.pathLabel.pack(padx = 0.25, pady = 0.8)
+                self.downloadButton.pack(padx = 0.5, pady = 0.9)
             
         # Check if Video is chosen to show settings
-        elif typeRadio.get() == 2:
-            qualityTypeLabel.place(relx = 0.23, rely = 0.7)
-            lowRadio.place(relx = 0.3, rely = 0.7)
-            mediumRadio.place(relx = 0.4, rely = 0.7)
-            highRadio.place(relx = 0.5, rely = 0.7)
+        elif self.typeRadio.get() == 2:
+            self.qualityTypeLabel.pack(padx = 0.23, pady = 0.7)
+            self.lowRadio.pack(padx = 0.3, pady = 0.7)
+            self.mediumRadio.pack(padx = 0.4, pady = 0.7)
+            self.highRadio.pack(padx = 0.5, pady = 0.7)
             
             # Checks if quality and directory are chosen to show download button
-            if qualityRadio.get() != 0:
-                getFileSize()
-                directoryButton.place(relx = 0.3, rely = 0.9)
+            if self.qualityRadio.get() != 0:
+                self.getFileSize()
+                self.directoryButton.pack(padx = 0.3, pady = 0.9)
             else:
-                directoryButton.place_forget()
+                self.directoryButton.pack_forget()
                             
-            if qualityRadio.get() != 0 and directory.get() != "":
-                pathLabel.configure(text= f"Path: {directory.get()}")
-                pathLabel.place(relx = 0.25, rely = 0.8)
-                downloadButton.place(relx = 0.5, rely = 0.9)
+            if self.qualityRadio.get() != 0 and self.directory.get() != "":
+                self.pathLabel.configure(text= f"Path: {self.directory.get()}")
+                self.pathLabel.pack(padx = 0.25, pady = 0.8)
+                self.downloadButton.pack(padx = 0.5, pady = 0.9)
             else:
-                downloadButton.place_forget()
-            
-            
-    global qualityRadio, qualityTypeLabel, lowRadio, mediumRadio, highRadio, downloadButton
+                self.downloadButton.pack_forget()
 
-    # File Type
-    downloadTypeLabel = ctk.CTkLabel(app, text= f"Download as: ", font= ("", 15))
-    downloadTypeLabel.place(relx = 0.18, rely = 0.6)
 
-    fileSizeLabel = ctk.CTkLabel(app, font= ("", 15))
-    
     # Gets the size of the video according to type and quality
-    def getFileSize():
-        global media
-        media = None
+    def getFileSize(self):
+        self.media = None
         
-        if typeRadio.get() == 1:
-            media = link.streams.filter(mime_type="audio/mp4", abr="128kbps", type="audio").first()
-        elif typeRadio.get() == 2:
-            if qualityRadio.get() == 1:
-                media = link.streams.filter(progressive=True, res="144p").first()
-            elif qualityRadio.get() == 2:
-                media = link.streams.filter(progressive=True, res="360p").first()
-            elif qualityRadio.get() == 3:
-                media = link.streams.filter(progressive=True, res="720p").first()
+        if self.typeRadio.get() == 1:
+            self.media = self.link.streams.filter(mime_type="audio/mp4", abr="128kbps", type="audio").first()
+        elif self.typeRadio.get() == 2:
+            if self.qualityRadio.get() == 1:
+                self.media = self.link.streams.filter(progressive=True, res="144p").first()
+            elif self.qualityRadio.get() == 2:
+                self.media = self.link.streams.filter(progressive=True, res="360p").first()
+            elif self.qualityRadio.get() == 3:
+                self.media = self.link.streams.filter(progressive=True, res="720p").first()
         
-        if media:
-            fileSizeLabel.configure(text=f"File Size: {media.filesize_mb} MBs")
+        if self.media:
+            self.fileSizeLabel.configure(text=f"File Size: {self.media.filesize_mb} MBs")
         else:
-            fileSizeLabel.configure(text="File Size: N/A")  # Handle NoneType gracefully
-        fileSizeLabel.place(relx=0.69, rely=0.58)
-    
-    # Audio/Video
-    typeRadio = tk.IntVar(value = 0)
-    audioRadio = ctk.CTkRadioButton(app, text= "Audio", value= 1, variable= typeRadio, command=updateQualityOptions)
-    audioRadio.place(relx = 0.3, rely = 0.6)
-    videoRadio = ctk.CTkRadioButton(app, text= "Video", value= 2, variable= typeRadio, command=updateQualityOptions)
-    videoRadio.place(relx = 0.4, rely = 0.6)
-    
-    # Quality Type
-    qualityRadio = tk.IntVar(value = 0)
-    qualityTypeLabel = ctk.CTkLabel(app, text= f"Quality: ", font= ("", 15))
-    lowRadio = ctk.CTkRadioButton(app, text= "144p", variable= qualityRadio, value= 1, command= updateQualityOptions)
-    mediumRadio = ctk.CTkRadioButton(app, text= "360p", variable= qualityRadio, value= 2, command= updateQualityOptions)
-    highRadio = ctk.CTkRadioButton(app, text= "720p", variable= qualityRadio, value= 3, command= updateQualityOptions)
-    
+            self.fileSizeLabel.configure(text="File Size: N/A")  # Handle NoneType gracefully
+        self.fileSizeLabel.pack(padx=0.69, pady=0.58)
+
     # Select download location
-    def selectDirectory():
-        directory.set(fd.askdirectory())
-        updateQualityOptions()
-    
-    directory = tk.StringVar(value= "")
-    directoryButton = ctk.CTkButton(app, text= "Select Download Location", command= selectDirectory)
-    pathLabel = ctk.CTkLabel(app, font= ("", 15))
-    
-    def downloadVideo():
-        download.show(app, directory.get(), media, media.url)
-        
-    # Download button
-    downloadButton = ctk.CTkButton(app, text= "Download", command= downloadVideo)
-    
+    def selectDirectory(self):
+        self.directory.set(fd.askdirectory())
+        self.updateQualityOptions()
+
+    # Downloads video
+    def downloadVideo(self):
+        self.showDownload(self.directory.get(), self.media)
