@@ -7,7 +7,8 @@ class App:
     def __init__(self, app):
         # App settings
         self.app = app
-        self.app.geometry("854x480")
+        self.app.geometry("1100x562")
+        self.app.resizable(False, False)
         self.app.title("Youtube Video Downloader")
         self.app.iconbitmap("Images/YTD Logo.ico")
         self.currentView = None
@@ -17,7 +18,7 @@ class App:
         self.View2 = None
         self.View3 = None
         
-        self.showVideoInfo("https://www.youtube.com/watch?v=p1df_2NwEB8")
+        self.showView(self.View1)
         
     def showView(self, view):
         if self.currentView:
