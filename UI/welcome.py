@@ -1,6 +1,5 @@
 # TODO:
-# Welcome message (DONE)
-# Enter URL (DONE)
+# Handle if incorrect URL or text were inputted
 
 from PIL import Image
 import customtkinter as ctk

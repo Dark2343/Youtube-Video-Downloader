@@ -1,8 +1,3 @@
-# TODO:
-# Progress bar (DONE)
-# Message at the end (DONE)
-# Return to main menu (DONE)
-
 import customtkinter as ctk
 import Logic.logic as logic, threading
 

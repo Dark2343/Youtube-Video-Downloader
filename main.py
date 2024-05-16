@@ -1,9 +1,3 @@
-# TODO:
-# 1- Create other frames (DONE)
-# 2- Transition between them (DONE)
-# 3- Make UI look better (DONE)
-# 4- Fix FullScreen problem (DONE)
-
 from UI.app import App
 import customtkinter as ctk
 

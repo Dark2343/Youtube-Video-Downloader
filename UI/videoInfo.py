@@ -1,13 +1,5 @@
 # TODO:
-# Video info (DONE)
-# Choose Audio or Video (DONE)
-# Select quality (DONE)
-# Select file download location (DONE)
-# Press download (DONE)
-
-# FIXME:
-# Handle if quality doesn't exist (DONE)
-# Handle exception if the youtube api failed or network error
+# Handle exception if Youtube API failed or network error occurred
 
 from PIL import Image
 import Logic.logic as logic, io, tkinter as tk
