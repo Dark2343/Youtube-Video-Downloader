@@ -1,3 +1,6 @@
+# TODO:
+# Handle if any error occurs
+
 from UI.app import App
 import customtkinter as ctk
 
