@@ -10,13 +10,13 @@ class Download(ctk.CTkFrame):
         
         # Top padding
         spacerFrame = ctk.CTkLabel(self, text= "")
-        spacerFrame.pack(pady=30)
+        spacerFrame.pack()
         
-        # Putting it on a different frame to give a better look
-        downloadingLabel = ctk.CTkLabel(self.app, text= f"Downloading: {media.default_filename}", font= ("", 25))
-        downloadingLabel.pack(padx= 30, pady = 25, anchor='w')
+        # File thats downloading
+        downloadingLabel = ctk.CTkLabel(self, text= f"Downloading: {media.default_filename}", font= ("", 25))
+        downloadingLabel.pack(padx= 30, pady = 65, anchor='w')
         
-        self.progressBar = ctk.CTkProgressBar(self, width=804, height=20,  orientation= "horizontal", mode= "determinate")
+        self.progressBar = ctk.CTkProgressBar(self, width=900, height=20,  orientation= "horizontal", mode= "determinate")
         self.progressBar.pack(padx= 30, pady = 15)
                 
         self.downloadVideo(media, path)
