@@ -1,3 +1,7 @@
+#TODO:
+# Add a download percent
+# Fix back to menu
+
 import customtkinter as ctk
 import Logic.logic as logic, threading
 
